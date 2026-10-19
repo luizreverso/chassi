@@ -1,0 +1,14 @@
+# Build & bundle artifacts not in .gitignore
+dist/
+**/dist/
+dist-docs/
+**/dist-docs/
+build/
+**/build/
+cdk.out/
+**/cdk.out/
+
+# Graphify output
+graphify-out/
+.graphify_*
+work/

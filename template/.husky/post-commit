@@ -1,0 +1,7 @@
+export PATH="$HOME/.local/bin:$PATH"
+if command -v graphify >/dev/null 2>&1 && [ -f "graphify-out/graph.json" ]; then
+  (graphify update . >/dev/null 2>&1 && GRAPHIFY_BACKEND=none graphify cluster-only . >/dev/null 2>&1 &)
+fi
+if command -v codebase-memory-mcp >/dev/null 2>&1; then
+  (echo '{"repo_path":"."}' | codebase-memory-mcp cli --quiet index_repository >/dev/null 2>&1 &)
+fi

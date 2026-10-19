@@ -1,0 +1,16 @@
+id: no-raw-sql-drop
+language: TypeScript
+severity: error
+message: >-
+  [Domain Guard] Destructive raw SQL (DROP TABLE / DROP COLUMN / TRUNCATE) is
+  forbidden in runtime TypeScript code. Use guardian-approved migrations.
+ignores:
+  - "**/*.test.ts"
+  - "**/scripts/**"
+rule:
+  any:
+    - pattern: sql.raw($QUERY)
+    - pattern: $DB.execute($QUERY)
+constraints:
+  QUERY:
+    regex: "(?i)\\b(DROP\\s+TABLE|DROP\\s+COLUMN|TRUNCATE\\s+TABLE)\\b"

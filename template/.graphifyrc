@@ -1,0 +1,6 @@
+# Project Graphify Configuration
+# Treat .mjs and .cjs files as JavaScript/TypeScript for AST extraction
+language.mjs=.js
+language.cjs=.js
+language.sql=sql
+viz_node_limit=0

@@ -1,0 +1,28 @@
+{
+  "name": "chassi",
+  "version": "1.0.0",
+  "description": "Chassi — Project-agnostic AI development backbone with Dual-Guardian ontology governance, Graphify + codebase-memory-mcp structural graphs, ast-grep guardrails, and a self-cleaning 6-step TDD workflow.",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/luizreverso/chassi.git"
+  },
+  "bin": {
+    "chassi": "./bin/init.mjs"
+  },
+  "scripts": {
+    "init": "node ./bin/init.mjs",
+    "test:guard": "cd template && node scripts/domain-guard.mjs --full",
+    "test:ast": "cd template && PATH=\"$HOME/.local/bin:$PATH\" ast-grep test --skip-snapshot-tests"
+  },
+  "keywords": [
+    "ai-agents",
+    "tdd",
+    "ontology",
+    "graphify",
+    "codebase-memory-mcp",
+    "ast-grep",
+    "context7"
+  ],
+  "license": "MIT"
+}

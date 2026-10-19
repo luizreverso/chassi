@@ -1,0 +1,52 @@
+# Dependencies & build outputs
+node_modules/
+**/node_modules/
+build/
+**/build/
+dist/
+**/dist/
+dist-docs/
+**/dist-docs/
+.next/
+**/.next/
+.react-router/
+**/.react-router/
+.turbo/
+.serverless/
+coverage/
+**/coverage/
+storybook-static/
+**/storybook-static/
+cdk.out/
+**/cdk.out/
+
+# Generated graph output & caches
+graphify-out/
+.graphify_*
+
+# Lockfiles, JSON configs, & static binary assets
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
+**/*.json
+**/*.map
+**/*.min.js
+**/*.d.ts
+**/*.png
+**/*.jpg
+**/*.jpeg
+**/*.gif
+**/*.webp
+**/*.ico
+**/*.svg
+**/*.mp4
+**/*.woff
+**/*.woff2
+**/*.ttf
+**/*.eot
+
+# Environment & IDE
+.env*
+.git/
+.DS_Store
+work/

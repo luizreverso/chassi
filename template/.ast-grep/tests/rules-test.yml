@@ -1,0 +1,6 @@
+id: no-raw-sql-drop
+valid:
+  - 'await db.execute(sql`SELECT 1`);'
+invalid:
+  - 'await db.execute("DROP TABLE users");'
+  - 'sql.raw("TRUNCATE TABLE orders");'
