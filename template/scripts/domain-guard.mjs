@@ -387,6 +387,18 @@ function checkDocCodeDrift() {
     const linkRegex = /\]\(file:\/\/([^)#\s]+)(?:#[^)]*)?\)/g;
     for (const m of content.matchAll(linkRegex)) {
       const rawTarget = m[1];
+      if (
+        rawTarget.includes("[") ||
+        rawTarget.includes("]") ||
+        rawTarget.includes("<") ||
+        rawTarget.includes(">") ||
+        rawTarget.includes("{{") ||
+        rawTarget.includes("}}") ||
+        rawTarget.includes("/path/to/") ||
+        rawTarget.includes("example")
+      ) {
+        continue;
+      }
       let resolvedPath = rawTarget;
       if (!rawTarget.startsWith(PROJECT_ROOT) && rawTarget.startsWith("/")) {
         resolvedPath = path.join(PROJECT_ROOT, rawTarget.slice(1));

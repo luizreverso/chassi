@@ -111,9 +111,22 @@ if (fs.existsSync(backboneConfigPath)) {
   }
 }
 
+// Customize templates/design.md with detected projectName
+const designDocPath = path.join(targetDir, "templates", "design.md");
+if (fs.existsSync(designDocPath)) {
+  try {
+    let designContent = fs.readFileSync(designDocPath, "utf8");
+    designContent = designContent.replaceAll("{{PROJECT_NAME}}", projectName);
+    fs.writeFileSync(designDocPath, designContent, "utf8");
+  } catch {
+    // ignore
+  }
+}
+
 // Merge backbone scripts into target package.json if present (or create a minimal one)
 const pkgPath = path.join(targetDir, "package.json");
 const BACKBONE_SCRIPTS = {
+  "decide": "node scripts/decide.mjs",
   "work:new": "node scripts/new-work.mjs",
   "guard:domain": "node scripts/domain-guard.mjs",
   "ast:scan": "PATH=\"$HOME/.local/bin:$PATH\" ast-grep scan",

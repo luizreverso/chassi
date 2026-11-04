@@ -1,7 +1,7 @@
 {
   "name": "chassi",
-  "version": "1.0.0",
-  "description": "Chassi — Project-agnostic AI development backbone with Dual-Guardian ontology governance, Graphify + codebase-memory-mcp structural graphs, ast-grep guardrails, and a self-cleaning 6-step TDD workflow.",
+  "version": "0.2.0",
+  "description": "Chassi — Project-agnostic AI development backbone with System-1 Decision Gate, Spec Drift verification, Dual-Guardian ontology governance, Graphify + codebase-memory-mcp structural graphs, ast-grep guardrails, and a self-cleaning 6-step TDD workflow.",
   "type": "module",
   "repository": {
     "type": "git",
@@ -13,16 +13,22 @@
   "scripts": {
     "init": "node ./bin/init.mjs",
     "test:guard": "cd template && node scripts/domain-guard.mjs --full",
-    "test:ast": "cd template && PATH=\"$HOME/.local/bin:$PATH\" ast-grep test --skip-snapshot-tests"
+    "test:decide": "cd template && node scripts/decide.mjs --route 'Fix bug in auth'",
+    "test:ast": "cd template && PATH=\"$HOME/.local/bin:$PATH\" ast-grep test --skip-snapshot-tests",
+    "test": "npm run test:guard && npm run test:decide"
   },
   "keywords": [
     "ai-agents",
     "tdd",
+    "system-1",
+    "spec-drift",
+    "egm",
     "ontology",
     "graphify",
     "codebase-memory-mcp",
     "ast-grep",
-    "context7"
+    "context7",
+    "design-tokens"
   ],
   "license": "MIT"
 }

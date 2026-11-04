@@ -25,28 +25,38 @@ Whenever a new work item, feature, bug fix, or client request is initiated:
   - Provide your recommended answer.
   - Ask questions **one at a time**.
   - **Graphify & Codebase-first**: Query `graphify-out/GRAPH_REPORT.md` (when present), `yarn graph:explain` / `yarn graph:query`, and `codebase-memory-mcp` first. Never ask the user about facts already `[EXTRACTED]` in the AST/schema graph; focus human questions on `[AMBIGUOUS]` and `[INFERRED]` design decisions.
+- If UI is involved, establish the project's **UI Design Dials** (1–10 scale: `DESIGN_VARIANCE`, `MOTION_INTENSITY`, `VISUAL_DENSITY`) from [`templates/design.md`](file:///templates/design.md).
 - Author the formal PRD (`work/<YYYY-MM-DD>_<name>/prd.md`) using the [`write-a-prd`](file:///.agents/skills/write-a-prd/SKILL.md) skill.
+- **The Goldfish Cold-Review Gate (EGM Pattern)**: Submit the PRD to an isolated zero-context subagent (`invoke_subagent(Model="flash")`) to test comprehension, discover edge cases, and ensure implementation readiness before slicing.
 
 ### 3. Tracer-Bullet Issue Slicing (Step 3)
 - Activate the [`prd-to-issues`](file:///.agents/skills/prd-to-issues/SKILL.md) skill to decompose the PRD into vertical, verifiable tracer bullet issues (`issues/NNN-*.md`).
 - Classify issues as `HITL` (human-in-the-loop review) or `AFK` (autonomous execution).
-- Quiz user on slice granularity, dependencies, and validation paths.
+- Route each slice to its optimal **Model Tier** (`L1`–`L6`) using `node scripts/decide.mjs --route`.
+- Quiz user on slice granularity, dependencies, model tiers, and validation paths.
 
 ### 4. Test-Driven Implementation (Step 4)
 - Work on a dedicated git branch (`feat/<date>-<name>`).
 - Execute issues using the [`tdd`](file:///.agents/skills/tdd/SKILL.md) skill (`RED -> GREEN -> REFACTOR`).
 - Respect `Type: HITL` (confirm interface plan first) vs. `Type: AFK` (execute vertical slice autonomously through `RED -> GREEN -> REFACTOR -> guard:domain -> typecheck -> test`).
-- Design deep modules (simple interfaces, encapsulated logic), mock only at system boundaries, test observable behavior, and remove any orphaned/dead exports before committing.
+- Design deep modules guided by the [`code-architect`](file:///.agents/agents/code-architect.md) agent, mock only at system boundaries, and test observable behavior.
+- **Spec Drift Gate (EGM Pattern)**: Verify that implementation matches the issue specifications without unstated drift or scope creep:
+  ```bash
+  node scripts/decide.mjs --drift --file issues/NNN-*.md
+  ```
+- Eliminate orphaned exports and dead code before committing.
 
-### 5. Human QA Testing Documentation (Step 5)
+### 5. Human QA Testing Documentation & Visual Proofs (Step 5)
 - Activate the [`qa-human-testing`](file:///.agents/skills/qa-human-testing/SKILL.md) skill once implementation is complete.
 - Create `work/<YYYY-MM-DD>_<name>/qa.md` documenting comprehensive instructions for a human tester:
   - Prerequisites, test accounts, seed data, and environment setup.
   - Happy path step-by-step verification flows with expected UI/API/DB outcomes.
   - Edge cases, validation errors, and failure modes.
-  - Responsive/cross-device verification checklist and visual proofs.
+  - Responsive/cross-device verification checklist and visual proofs (stateless Playwright CLI screenshots).
+  - Run `npx -y impeccable detect` for frontend changes to catch deterministic UI anti-patterns.
 
-### 6. Merge, CD Verification & Context-Rot Clean-Up (Step 6)
+### 6. PR Creation, Merge & Context-Rot Clean-Up (Step 6)
+- Create structured pull requests targeting the default branch using the [`git-pr-workflow`](file:///.agents/skills/git-pr-workflow/SKILL.md) skill.
 - Activate the [`finish-work`](file:///.agents/skills/finish-work/SKILL.md) skill once code review and human QA sign-off are complete.
 - Squash and merge the PR via `gh pr merge <pr_number> --squash --delete-branch`.
 - Track the triggered CD deployment workflow run on the default branch to completion.
@@ -86,18 +96,23 @@ Every core domain concept in the repository is governed by a **Dual-Guardian Pai
 
 ---
 
-## Graphify Knowledge Graph, MCP Stack & Automated Guardrails
+## System-1 Decision Gate, Graphify Knowledge Graph & Guardrails
 
+- **System-1 Decision Gate & Router ([`scripts/decide.mjs`](file:///scripts/decide.mjs))**:
+  - `node scripts/decide.mjs --route <prompt>`: Calibrates task complexity across the 6-Level Model & Effort Matrix (`L1`–`L6`) for Antigravity, Claude Code, and Cursor.
+  - `node scripts/decide.mjs --drift --file <issue.md>`: Evaluates Spec Drift (EGM Pattern) comparing git diff vs. issue criteria.
+  - `node scripts/decide.mjs --noul <question>`: Fast Boolean binary gate with logprob probability.
+  - `node scripts/decide.mjs --choice <A,B,C> <prompt>`: Constrained enum classification.
 - **Agnostic Project Adapter ([`.agents/backbone.json`](file:///.agents/backbone.json))**:
   - Declares workspace isolation rules, cross-layer import restrictions, schema/migration paths, Graphify topology rules, verification commands, and Dual-Guardian file triggers.
 - **Graph-First Codebase Navigation (`Graphify` + `codebase-memory-mcp`)**:
   - Before globbing or grepping raw files across the codebase, check `graphify-out/GRAPH_REPORT.md` (when present).
-  - Use `yarn graph:explain "<symbol>"`, `yarn graph:query "<concept>"`, and `yarn graph:path "<nodeA>" "<nodeB>"` for architectural topology (God Nodes, Surprising Connections, Leiden communities).
-  - Use **`codebase-memory-mcp`** for cross-boundary symbol, call-chain, and HTTP route tracing (`schema` $\rightarrow$ `DTO` $\rightarrow$ `handler/controller` $\rightarrow$ `client fetch` $\rightarrow$ `UI component`).
-  - Run `yarn graph:update` (or let `.husky/post-commit` update automatically) after modifying source code; use `yarn graph:build` for a clean full rebuild when `.graphifyignore` changes.
+  - Use `yarn graph:explain "<symbol>"`, `yarn graph:query "<concept>"`, and `yarn graph:path "<nodeA>" "<nodeB>"` for architectural topology.
+  - Use **`codebase-memory-mcp`** for cross-boundary symbol, call-chain, and HTTP route tracing.
+  - Run `yarn graph:update` (or let `.husky/post-commit` update automatically) after modifying source code.
 - **Structural AST Linting & Codemods (`ast-grep`)**:
   - Configured via [`sgconfig.yml`](file:///sgconfig.yml) and [`.ast-grep/rules/`](file:///.ast-grep/rules/).
-  - Run `yarn ast:scan` to check Dual-Guardian AST rules and `yarn ast:test` to run rule unit tests in [`.ast-grep/tests/rules-test.yml`](file:///.ast-grep/tests/rules-test.yml).
+  - Run `yarn ast:scan` to check Dual-Guardian AST rules and `yarn ast:test` to run rule unit tests.
 - **Version-Accurate Framework Docs (`Context7` MCP)**:
   - Query `context7` MCP during Step 4 (`tdd`) for live, version-specific documentation on external libraries and frameworks.
 - **Epistemic Confidence Tags**:

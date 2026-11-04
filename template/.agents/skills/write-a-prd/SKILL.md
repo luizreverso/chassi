@@ -1,6 +1,6 @@
 ---
 name: write-a-prd
-description: Generate a PRD from the client brief and write it as a local markdown file in work/<date>_<name>/prd.md. Use when the user wants to turn a client request into a structured PRD.
+description: Generate a PRD from the client brief, submit it to the Goldfish Cold-Review Gate (EGM Pattern), and write it as a local markdown file in work/<date>_<name>/prd.md.
 ---
 
 This skill will be invoked when the user wants to create a PRD. You may skip steps if you don't consider them necessary.
@@ -20,6 +20,18 @@ Check with the user that these modules match their expectations. Check with the 
 5. Once you have a complete understanding of the problem and solution, use the template below to write the PRD:
    - Write the PRD to the active work folder: `work/<current_date>_<name_of_the_work>/prd.md` (or `issues/prd.md` if running outside a work folder).
    - Do NOT submit a GitHub issue or call any external service.
+
+6. **The Goldfish Cold-Review Gate (EGM Pattern)**:
+   > [!IMPORTANT]
+   > **Never proceed directly from PRD to issue slicing without a Goldfish Review.**
+   > The planning conversation ("The Elephant") shares unstated human context that will be invisible to fresh implementation subagents.
+
+   Dispatch an isolated, zero-context subagent (`invoke_subagent(Model="flash")`) whose *only* job is to read `prd.md` completely cold and test:
+   1. **Comprehension Check**: Can it accurately summarize what to build without misinterpreting requirements? If the goldfish gets confused, the PRD has missing or ambiguous specifications.
+   2. **Antagonistic Review**: It attacks the PRD looking for unstated edge cases, error conditions, race hazards, missing database indexes, security issues, or boundary leaks.
+   3. **Implementation Readiness**: Are deep module interfaces, types, schemas, and acceptance criteria concrete enough for an autonomous subagent in Step 4 (TDD) to implement blindly without asking questions?
+
+   Patch any blind spots found by the Goldfish directly into `prd.md` before proceeding to Step 3 ([skills/prd-to-issues/SKILL.md](file:///.agents/skills/prd-to-issues/SKILL.md)).
 
 <prd-template>
 
@@ -50,6 +62,10 @@ A list of implementation decisions that were made. This can include:
 - Schema changes
 - API contracts
 - Specific interactions
+- **UI Design Dials** (if frontend affected, reference [`templates/design.md`](file:///templates/design.md)):
+  - `DESIGN_VARIANCE`: `[1-10]`
+  - `MOTION_INTENSITY`: `[1-10]`
+  - `VISUAL_DENSITY`: `[1-10]`
 
 ## Domain Dual-Guardians Alignment
 

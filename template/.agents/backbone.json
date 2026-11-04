@@ -41,7 +41,9 @@
     "reportPath": "graphify-out/GRAPH_REPORT.md",
     "enforceZeroCycles": true
   },
+  "design": "templates/design.md",
   "commands": {
+    "decide": "node scripts/decide.mjs",
     "guard": "yarn guard:domain",
     "astScan": "yarn ast:scan",
     "astTest": "yarn ast:test",

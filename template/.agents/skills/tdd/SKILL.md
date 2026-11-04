@@ -1,6 +1,6 @@
 ---
 name: tdd
-description: Test-driven development with red-green-refactor loop. Use when user wants to build features or fix bugs using TDD, mentions "red-green-refactor", wants integration tests, or asks for test-first development.
+description: Test-driven development with red-green-refactor loop, dead-code hygiene, and Spec Drift Gate verification.
 ---
 
 # Test-Driven Development
@@ -79,7 +79,7 @@ Rules:
 - Don't anticipate future tests
 - Keep tests focused on observable behavior
 
-### 4. Refactor & Dead-Code Hygiene
+### 4. Refactor, Dead-Code Hygiene & Spec Drift Verification
 
 After all tests pass, look for [refactor candidates](refactoring.md):
 
@@ -87,6 +87,11 @@ After all tests pass, look for [refactor candidates](refactoring.md):
 - [ ] Deepen modules (move complexity behind simple interfaces)
 - [ ] Apply SOLID principles where natural
 - [ ] **Eliminate orphaned / dead code**: Check modified files via `codebase-memory-mcp` (`trace_path` / `search_graph`) to ensure no unused helper functions, orphaned DTOs, or unreferenced exports were left behind during iteration
+- [ ] **Spec Drift Gate (EGM Pattern)**: Verify that implementation matches the issue specifications without unstated drift or scope creep:
+  ```bash
+  node scripts/decide.mjs --drift --file issues/NNN-*.md
+  ```
+- [ ] **UI Dials**: If UI was built, verify alignment with `templates/design.md` dials (`DESIGN_VARIANCE`, `MOTION_INTENSITY`, `VISUAL_DENSITY`).
 - [ ] Run `yarn guard:domain` and tests after each refactor step
 
 **Never refactor while RED.** Get to GREEN first.
@@ -98,10 +103,6 @@ After all tests pass, look for [refactor candidates](refactoring.md):
 [ ] Test uses public interface only
 [ ] Test would survive internal refactor
 [ ] Code is minimal for this test
-[ ] No speculative features or orphaned exports added
+[ ] Spec Drift Gate passed (node scripts/decide.mjs --drift --file issues/NNN-*.md)
+[ ] Zero dead exports or orphaned helpers left behind
 ```
-
-## Tooling in the RED-GREEN-REFACTOR Loop
-
-- **Context7 MCP (`context7`)**: Query `context7` MCP for live, version-specific API docs before writing framework-specific code so you never hallucinate legacy APIs.
-- **`ast-grep` (`yarn ast:scan` / `sg`)**: During the **REFACTOR** step or cross-app schema/DTO migrations, use `ast-grep` structural patterns/rewrites and run `yarn guard:domain` (configured via [`.agents/backbone.json`](file:///.agents/backbone.json)) to verify all `.ast-grep/rules/` Dual-Guardian invariants pass.

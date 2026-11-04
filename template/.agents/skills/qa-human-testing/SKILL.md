@@ -1,6 +1,6 @@
 ---
 name: qa-human-testing
-description: Generate comprehensive human testing documentation (qa.md) for manual QA verification of a feature, bug fix, or PR. Use after implementation and TDD are complete to prepare instructions for a human tester.
+description: Generate comprehensive human testing documentation (qa.md) with visual E2E proofs and UI anti-pattern checks for manual QA verification of a feature, bug fix, or PR.
 ---
 
 # QA & Human Testing Documentation
@@ -61,6 +61,17 @@ For each primary user story:
 
 ## 4. Automated Visual Proofs & Screen Recordings
 - **E2E Visual Execution**: Attach or link any Playwright / E2E video recordings, screenshots, or animated GIFs demonstrating happy-path execution.
+  - Capture rapid stateless screenshots via:
+    ```bash
+    npx -y playwright screenshot --viewport-size="1280,720" http://localhost:3000/target ./proofs/desktop.png
+    npx -y playwright screenshot --viewport-size="375,667" http://localhost:3000/target ./proofs/mobile.png
+    ```
+- **Deterministic UI Anti-Pattern Check (Impeccable Detect)**:
+  For frontend/UI modifications, run the deterministic detector to catch common UI anti-patterns (missing focus indicators, contrast failures, unclipped overflows, tiny touch targets) before human handoff:
+  ```bash
+  npx -y impeccable detect
+  ```
+- **Attached Artifacts**: Embed or link the recorded happy path execution GIF/video, screenshots, and detector output so the human tester can preview screen state and animation behavior before testing.
 
 ## 5. Cross-Device & Responsive Checks (if frontend affected)
 - [ ] Desktop viewport (>= 1280px)
