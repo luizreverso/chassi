@@ -1,6 +1,6 @@
-# Design System Preset: Editorial & Media (The Daily Carnage Style)
+# Design System Preset: Editorial & Media (Bold Editorial Style)
 
-A high-character editorial design system tailored for publishing, media brands, and interactive marketing games.
+A high-character editorial design system tailored for publishing, media brands, and interactive web magazines.
 
 ## 0. UI Design Dials
 - **`DESIGN_VARIANCE`**: `8` (Bold mastheads, distinctive accent colors, asymmetrical hero layouts)
@@ -10,7 +10,7 @@ A high-character editorial design system tailored for publishing, media brands, 
 ## 1. Color Palette & Semantic Tokens
 - **Background / Surface**: `#FAFAF8` (Warm off-white paper)
 - **Surface Container (Cards)**: `#FFFFFF` (Crisp white with `1px solid #E5E5E0` border)
-- **Primary / Brand Accent**: `#D93829` (High-energy Carnage red for CTAs and streaks)
+- **Primary / Brand Accent**: `#D93829` (High-energy crimson red for CTAs and streaks)
 - **High-Contrast Text / Ink**: `#111111` (Deep black ink for headlines and body)
 - **Muted Text / Secondary**: `#6B7280` (Subtle captions, timestamps, and metadata)
 - **Border / Divider**: `#E5E7EB` (Clean 1px borders)

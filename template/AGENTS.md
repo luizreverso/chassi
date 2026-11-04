@@ -16,6 +16,8 @@ Whenever a new work item, feature, bug fix, or client request is initiated:
 - Creates `work/<YYYY-MM-DD>_<name_of_the_work>/` and initializes `requirements.md` containing:
   - What we want to build or what the user/client requested.
   - Background context, requirements, and constraints.
+- For client briefs or proposals requiring task breakdowns and three-point estimates, use the [`scoper`](file:///.agents/agents/scoper.md) agent and [`scoping-estimation`](file:///.agents/skills/scoping-estimation/SKILL.md) skill to generate risk-weighted PERT quotes.
+
 
 ### 2. "Grill Me" Plan & PRD Alignment (Step 2)
 - Before jumping into implementation, activate the [`grill-me`](file:///.agents/skills/grill-me/SKILL.md) skill.
@@ -67,9 +69,11 @@ Whenever a new work item, feature, bug fix, or client request is initiated:
 
 ---
 
-## Autonomous PR Code Review Agent
+## Autonomous Engineering, Scoping & Review Agents
 
-- Open Pull Requests are reviewed using the [`pr-reviewer`](file:///.agents/agents/pr-reviewer.md) agent or [`pr-review`](file:///.agents/skills/pr-review/SKILL.md) skill.
+- **Architecture & Deep Modules**: Guided by the [`code-architect`](file:///.agents/agents/code-architect.md) agent.
+- **Scope Definition & PERT Estimation**: Guided by the [`scoper`](file:///.agents/agents/scoper.md) agent and [`scoping-estimation`](file:///.agents/skills/scoping-estimation/SKILL.md) skill.
+- **Autonomous PR Code Review**: Open Pull Requests are reviewed using the [`pr-reviewer`](file:///.agents/agents/pr-reviewer.md) agent or [`pr-review`](file:///.agents/skills/pr-review/SKILL.md) skill.
 - The review agent uses `gh pr view`, `gh pr diff`, `yarn graph:update`, and `yarn guard:domain --full` to perform a rigorous first-pass code review auditing:
   1. **Security**: Secrets, sanitization, authentication, and tenant authorization.
   2. **Type Safety & Correctness**: Strict type checks, schema/DTO validation, error handling.

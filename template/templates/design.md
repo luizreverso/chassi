@@ -82,3 +82,16 @@ Frontend implementation subagents must tune typography, spacing, and animations 
   - Clear focus ring, accessible `<label>` associations, and inline validation states (`:user-invalid` / `aria-invalid`).
 - **Cards & Interactive Modules**:
   - Generous internal padding (`>= 20px`), consistent border radius, and zero cumulative layout shift (CLS) on media load.
+
+---
+
+## 6. Available Design System Presets
+
+Adopt or adapt one of Chassi's ready-to-use design system presets in `templates/design-systems/`:
+- **[`Linear Dark`](file:///templates/design-systems/linear-dark.md)**: Modern cybernetic, dark-mode first, keyboard-driven productivity & developer tools.
+- **[`B2B Clean`](file:///templates/design-systems/b2b-clean.md)**: High-trust corporate SaaS, admin dashboards, data tables, and tabular reporting.
+- **[`Editorial Bold`](file:///templates/design-systems/editorial-bold.md)**: Publishing, media, high-contrast serif typography, and bold creative statements.
+- **[`Clinical Clean`](file:///templates/design-systems/clinical-clean.md)**: Healthcare, data platforms, medical, sterile, high-legibility, and high-trust.
+- **[`Warm Approachable`](file:///templates/design-systems/warm-approachable.md)**: Warm, approachable, rounded, consumer mobile, community & wellness.
+- **[`Studio Obsidian`](file:///templates/design-systems/studio-obsidian.md)**: Dark studio craft, warm obsidian surfaces, brushed brass accents, and spatial stage interaction.
+

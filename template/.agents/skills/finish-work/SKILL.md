@@ -1,23 +1,38 @@
 ---
 name: finish-work
-description: Conclude a finished work item by merging the PR via gh, monitoring the post-merge CD deployment pipeline on the default branch to completion, and cleaning up the completed work folder to prevent context rot. Use when all issues, tests, and QA sign-offs for a work item are complete.
+description: Conclude a finished work item by verifying PR status via gh, squash-merging, monitoring the deployment pipeline on the default branch, logging to work/HISTORY.md, and cleaning up the completed work directory to prevent context rot. Respects the ownership gate in .agents/backbone.json (internal vs client-owned).
 ---
 
-# Finish Work: Merge, CD Monitoring & Context-Rot Cleanup
+# Finish Work: Merge, Deployment Verification & Context-Rot Cleanup
 
 This skill defines **Step 6** of the development workflow.
 
-## Purpose
-After all vertical slice issues are implemented via TDD and the human QA guide is approved, this skill executes the final delivery: merging the PR, tracking the live deployment pipeline on the default branch (configured in [`.agents/backbone.json`](file:///.agents/backbone.json)), and cleaning up the temporary work folder so the repository never suffers from context rot.
+## ⚠️ Repository Ownership Gate
 
-## Procedure
+Before performing any action, verify repository ownership in [`.agents/backbone.json`](file:///.agents/backbone.json):
+- **`"ownership": "internal"`** (Internal or team-owned repositories):
+  ✅ **Full lifecycle permitted**: automated squash-merge, deployment monitoring, enduring record in `work/HISTORY.md`, and completed work folder deletion.
+- **`"ownership": "client"`** (External client-owned repositories):
+  ⛔ **Automated squash-merge & work deletion restricted**:
+  - Stop after opening the PR ([`.agents/skills/git-pr-workflow/SKILL.md`](file:///.agents/skills/git-pr-workflow/SKILL.md)).
+  - Attach visual QA proof ([`.agents/skills/qa-human-testing/SKILL.md`](file:///.agents/skills/qa-human-testing/SKILL.md)) and automated PR review ([`.agents/skills/pr-review/SKILL.md`](file:///.agents/skills/pr-review/SKILL.md)).
+  - Hand off to client engineering leads / stakeholders for review and merge.
+
+---
+
+## Procedure for Internal Repositories (`"ownership": "internal"`)
 
 ### 1. Merge PR
-1. Verify PR status and reviews:
+1. Verify PR status and automated checks:
    ```bash
    gh pr view <pr_number> --json reviewDecision,statusCheckRollup
    ```
-2. Squash and merge the pull request:
+2. Verify domain guard and secret checks pass:
+   ```bash
+   node scripts/scan-secrets.mjs
+   node scripts/domain-guard.mjs --full
+   ```
+3. Squash and merge the pull request:
    ```bash
    gh pr merge <pr_number> --squash --delete-branch
    ```
@@ -30,7 +45,8 @@ After all vertical slice issues are implemented via TDD and the human QA guide i
    ```
 2. Locate the triggered CD workflow run on `<default_branch>` (if CI/CD is configured):
    ```bash
-   gh run list --branch <default_branch> -L 1 --json databaseId,status,displayTitle
+   gh run list --branch <default_branch> -L 1 --json databaseId,status,conclusion,displayTitle
+   gh run watch <run_id>
    ```
 3. Monitor the deployment run to completion and confirm `conclusion: success`.
 

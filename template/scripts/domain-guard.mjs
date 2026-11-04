@@ -400,8 +400,12 @@ function checkDocCodeDrift() {
         continue;
       }
       let resolvedPath = rawTarget;
-      if (!rawTarget.startsWith(PROJECT_ROOT) && rawTarget.startsWith("/")) {
-        resolvedPath = path.join(PROJECT_ROOT, rawTarget.slice(1));
+      const normalizedRel = rawTarget
+        .replace(/^\/Users\/[^/]+\/Projects\/[^/]+\//, "/")
+        .replace(/^\/home\/[^/]+\/projects\/[^/]+\//, "/")
+        .replace(/^\/home\/runner\/work\/[^/]+\/[^/]+\//, "/");
+      if (!normalizedRel.startsWith(PROJECT_ROOT) && normalizedRel.startsWith("/")) {
+        resolvedPath = path.join(PROJECT_ROOT, normalizedRel.slice(1));
       }
       if (!fs.existsSync(resolvedPath) && !fs.existsSync(rawTarget)) {
         const line = content.substring(0, m.index).split("\n").length;

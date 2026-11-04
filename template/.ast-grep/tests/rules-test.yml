@@ -3,4 +3,21 @@ valid:
   - 'await db.execute(sql`SELECT 1`);'
 invalid:
   - 'await db.execute("DROP TABLE users");'
-  - 'sql.raw("TRUNCATE TABLE orders");'
+  - 'sql.raw("TRUNCATE TABLE transactions");'
+---
+id: no-hard-delete-immutable-records
+valid:
+  - 'await db.update(invoices).set({ status: "cancelled" });'
+  - 'await db.delete(users).where(eq(users.id, id));'
+invalid:
+  - 'await db.delete(invoices);'
+  - 'await db.delete(ledger);'
+  - 'await db.delete(auditLogs);'
+---
+id: no-scalar-weight-overwrite
+valid:
+  - 'await db.update(users).set({ name: "Alex" });'
+  - 'await db.insert(scores).values({ userId, score: 100 });'
+invalid:
+  - 'await db.update(users).set({ name: "Alex", score: 100 });'
+  - 'await db.update(accounts).set({ active: true, balance: 500 });'

@@ -1,0 +1,21 @@
+id: no-hard-delete-immutable-records
+language: TypeScript
+severity: error
+message: >-
+  [Dual-Guardian AST Invariant] Hard deletion (`db.delete(...)` or direct SQL delete)
+  of immutable audit/financial/ledger records is strictly forbidden.
+  Use status transitions (`status: 'cancelled'`) or append-only ledger entries.
+files:
+  - "**/*.ts"
+  - "**/*.tsx"
+  - "**/*.js"
+  - "**/*.jsx"
+ignores:
+  - "**/*.test.*"
+  - "**/tests/**"
+rule:
+  any:
+    - pattern: $DB.delete(invoices)
+    - pattern: $DB.delete(ledger)
+    - pattern: $DB.delete(auditLogs)
+    - pattern: $DB.delete(transactions)

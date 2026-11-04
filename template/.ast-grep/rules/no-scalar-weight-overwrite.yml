@@ -1,0 +1,21 @@
+id: no-scalar-weight-overwrite
+language: TypeScript
+severity: warning
+message: >-
+  [Dual-Guardian AST Invariant] Modifying fluctuating or time-series metrics via direct scalar
+  update is discouraged. Prefer append-only telemetry/history records.
+files:
+  - "**/*.ts"
+  - "**/*.tsx"
+ignores:
+  - "**/*.test.*"
+  - "**/tests/**"
+rule:
+  all:
+    - kind: pair
+    - has:
+        kind: property_identifier
+        regex: "^(score|balance)$"
+    - inside:
+        stopBy: end
+        pattern: "$A.set($$$ARGS)"
